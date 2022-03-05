@@ -2,6 +2,11 @@
 from scapy.all import *
 import logging, threading, time, subprocess
 
+src = '0a:0b:00:00:00:01'
+dst = '0a:0b:00:00:00:02'
+srcip = '10.0.0.1'
+dstip = '10.0.0.2'
+
 sendpkt = Ether(src = src, dst = dst, type = 0x0800) / IP(src = srcip, dst = dstip) / TCP() / Raw("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 sendiface = 'enp179s0f0'
 interfaces = ['enp179s0f0', 'enp179s0f1']
@@ -25,11 +30,6 @@ for iface in interfaces:
 		os.remove('/tmp/{}.pcap'.format(iface))
 	procs.append(subprocess.Popen(['tcpdump', '-i', iface, '-w', '/tmp/{}.pcap'.format(iface)], stderr = subprocess.DEVNULL))
 time.sleep(1)
-
-src = '0a:0b:00:00:00:01'
-dst = '0a:0b:00:00:00:02'
-srcip = '10.0.0.1'
-dstip = '10.0.0.2'
 
 s = socket.socket(socket.AF_PACKET, socket.SOCK_RAW)
 s.bind((sendiface, 0))
